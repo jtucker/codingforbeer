@@ -1,0 +1,9 @@
+baseURL = "https://codingforbeer.github.io/"
+languageCode = "en-us"
+title = "Coding for Beer 🍻"
+
+theme = "vitae"
+
+pygmentsstyle = "tango"
+pygmentscodefences = true
+pygmentscodefencesguesssyntax = true
