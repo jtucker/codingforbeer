@@ -2,20 +2,20 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 	<channel>
 		<title>fsharp on Coding for Beer 🍻</title>
-		<link>https://jtucker.github.io/codingforbeer/tags/fsharp/</link>
-		<description>Recent content in fsharp on jtucker.github.io</description>
+		<link>https://codingfor.beer/tags/fsharp/</link>
+		<description>Recent content in fsharp on codingfor.beer</description>
 		<generator>Hugo -- gohugo.io</generator>
 		<language>en-us</language>
 		<lastBuildDate>Wed, 02 Dec 2020 09:47:58 -0500</lastBuildDate>
 		
-		<atom:link href="https://jtucker.github.io/codingforbeer/tags/fsharp/index.xml" rel="self" type="application/rss+xml" />
+		<atom:link href="https://codingfor.beer/tags/fsharp/index.xml" rel="self" type="application/rss+xml" />
 		
 		<item>
 			<title>Advent of Code 2020 - Day 1</title>
-			<link>https://jtucker.github.io/codingforbeer/posts/advent-of-code-2020-day1/</link>
+			<link>https://codingfor.beer/posts/advent-of-code-2020-day1/</link>
 			<pubDate>Wed, 02 Dec 2020 09:47:58 -0500</pubDate>
 			
-			<guid>https://jtucker.github.io/codingforbeer/posts/advent-of-code-2020-day1/</guid>
+			<guid>https://codingfor.beer/posts/advent-of-code-2020-day1/</guid>
 			<description>
 				
 				My thoughts on solving Advent of Code 2020 - Day 1 with F#
