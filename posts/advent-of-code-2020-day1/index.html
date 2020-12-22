@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+	
+	<meta name="generator" content="Hugo 0.79.1" />
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	
+	<meta property="og:title" content="Advent of Code 2020 - Day 1">
+	
+	
+	<meta name="keywords" content="adventofcode,fsharp,code"><meta name="description" content="My thoughts on solving Advent of Code 2020 - Day 1 with F#"><meta property="og:title" content="Advent of Code 2020 - Day 1" />
+<meta property="og:description" content="My thoughts on solving Advent of Code 2020 - Day 1 with F#" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://codingforbeer.github.io/posts/advent-of-code-2020-day1/" />
+<meta property="article:published_time" content="2020-12-02T09:47:58-05:00" />
+<meta property="article:modified_time" content="2020-12-02T09:47:58-05:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Advent of Code 2020 - Day 1"/>
+<meta name="twitter:description" content="My thoughts on solving Advent of Code 2020 - Day 1 with F#"/>
+
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/normalize.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/main.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/all.css" />
+	<title>Advent of Code 2020 - Day 1 | Coding for Beer 🍻</title></head>
+<body><header>
+	
+	<div id="titletext"><h2 id="title"><a href="https://codingforbeer.github.io/">Coding for Beer 🍻</a></h2></div>
+	<div id="title-description"><div id="social">
+			<nav>
+				<ul></ul>
+			</nav>
+		</div>
+	</div>
+	
+</header>
+<main><div class="post">
+	
+	<div class="author">
+	
+	</div>
+	<div class="post-header">
+	
+		<div class="meta">
+			
+			<div class="date">
+				<span class="day">02</span>
+				<span class="rest">Dec 2020</span>
+			</div>
+			
+		</div>
+		
+		<div class="matter">
+			<h1 class="title">Advent of Code 2020 - Day 1</h1>
+		</div>
+	</div>
+	<div class="markdown">
+		<h3 id="problem">Problem</h3>
+<p>From the <a href="https://adventofcode.com/2020/day/1" target="_blank">website</a>:</p>
+<h4 id="part-1">Part 1</h4>
+<blockquote>
+<p>Before you leave, the Elves in accounting just need you to fix your expense report (your puzzle input); apparently, something isn&rsquo;t quite adding up.
+Specifically, they need you to find the two entries that sum to 2020 and then multiply those two numbers together.</p>
+</blockquote>
+<h4 id="part-2">Part 2</h4>
+<blockquote>
+<p>The Elves in accounting are thankful for your help; one of them even offers you a starfish coin they had left over from a past vacation. They offer you a second one if you can find three numbers in your expense report that meet the same criteria.</p>
+</blockquote>
+<h3 id="solution">Solution</h3>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fsi" data-lang="fsi"><span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">collectFind</span> <span style="color:#204a87;font-weight:bold">list</span> <span style="color:#000">collector</span> <span style="color:#000">finder</span> <span style="color:#ce5c00;font-weight:bold">=</span>
+    <span style="color:#204a87;font-weight:bold">list</span> 
+    <span style="color:#ce5c00;font-weight:bold">|&gt;</span> <span style="color:#000">List</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">collect</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">collector</span><span style="color:#ce5c00;font-weight:bold">)</span> 
+    <span style="color:#ce5c00;font-weight:bold">|&gt;</span> <span style="color:#000">List</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">find</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">finder</span><span style="color:#ce5c00;font-weight:bold">)</span>
+
+<span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">pairsCollector</span> <span style="color:#000">x</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">entries</span> <span style="color:#ce5c00;font-weight:bold">|&gt;</span> <span style="color:#000">List</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">map</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">fun</span> <span style="color:#000">y</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">x</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">y</span><span style="color:#ce5c00;font-weight:bold">))</span>
+<span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">pairsFinder</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">x</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">y</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">x</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#000">y</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">2020</span>
+
+<span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">triplesCollector</span> <span style="color:#000">x</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">entries</span> <span style="color:#ce5c00;font-weight:bold">|&gt;</span> <span style="color:#000">List</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">collect</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">fun</span> <span style="color:#000">y</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#000">entries</span> <span style="color:#ce5c00;font-weight:bold">|&gt;</span> <span style="color:#000">List</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">map</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">fun</span> <span style="color:#000">z</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">x</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">y</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">z</span><span style="color:#ce5c00;font-weight:bold">)))</span>
+<span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">triplesFinder</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">x</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">y</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">z</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">x</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#000">y</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#000">z</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">2020</span>
+
+<span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">x</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">y</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">collectFind</span> <span style="color:#000">entries</span> <span style="color:#000">pairsCollector</span> <span style="color:#000">pairsFinder</span>
+<span style="color:#000">printfn</span> <span style="color:#4e9a06">&#34;Answer Part 1: %i * %i = %i&#34;</span> <span style="color:#000">x</span> <span style="color:#000">y</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">x</span> <span style="color:#ce5c00;font-weight:bold">*</span> <span style="color:#000">y</span><span style="color:#ce5c00;font-weight:bold">)</span>
+
+<span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">a</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">b</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">c</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">collectFind</span> <span style="color:#000">entries</span> <span style="color:#000">triplesCollector</span> <span style="color:#000">triplesFinder</span>
+<span style="color:#000">printfn</span> <span style="color:#4e9a06">&#34;Answer Part 2: %i * %i * %i = %i&#34;</span> <span style="color:#000">a</span> <span style="color:#000">b</span> <span style="color:#000">c</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">a</span> <span style="color:#ce5c00;font-weight:bold">*</span> <span style="color:#000">b</span> <span style="color:#ce5c00;font-weight:bold">*</span> <span style="color:#000">c</span><span style="color:#ce5c00;font-weight:bold">)</span></code></pre></div>
+<h3 id="thoughts-on-why-i-did-what-i-did">Thoughts on why I did what I did</h3>
+<p>This actually wasn&rsquo;t the initial solution I came up with. My first thought was something like a <code>find_map</code> :</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fsharp" data-lang="fsharp"><span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">rec</span> <span style="color:#000">find_map</span> <span style="color:#000">f</span> <span style="color:#000">a</span> <span style="color:#000">l</span> <span style="color:#ce5c00;font-weight:bold">=</span>
+    <span style="color:#204a87;font-weight:bold">match</span> <span style="color:#000">a</span> <span style="color:#204a87;font-weight:bold">with</span>
+    <span style="color:#ce5c00;font-weight:bold">|</span> <span style="color:#3465a4">[]</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#000">None</span>
+    <span style="color:#ce5c00;font-weight:bold">|</span> <span style="color:#000">x</span> <span style="color:#ce5c00;font-weight:bold">::</span> <span style="color:#000">y</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span>
+        <span style="color:#204a87;font-weight:bold">match</span> <span style="color:#000">f</span> <span style="color:#000">x</span> <span style="color:#000">y</span> <span style="color:#204a87;font-weight:bold">with</span>
+        <span style="color:#ce5c00;font-weight:bold">|</span> <span style="color:#000">Some</span> <span style="color:#ce5c00;font-weight:bold">_</span> <span style="color:#204a87;font-weight:bold">as</span> <span style="color:#000">result</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#000">result</span>
+        <span style="color:#ce5c00;font-weight:bold">|</span> <span style="color:#000">None</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#000">find_map</span> <span style="color:#000">f</span> <span style="color:#000">y</span> <span style="color:#000">l</span>
+</code></pre></div><p>Which when I then supplied with the following function worked quite well.</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fsharp" data-lang="fsharp"><span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">processor</span> <span style="color:#000">item</span> <span style="color:#000">listToSearch</span> <span style="color:#ce5c00;font-weight:bold">=</span>
+    <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">diff</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">2020</span> <span style="color:#ce5c00;font-weight:bold">-</span> <span style="color:#000">item</span>
+    <span style="color:#204a87;font-weight:bold">match</span> <span style="color:#000">List</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">contains</span> <span style="color:#000">diff</span> <span style="color:#000">listToSearch</span> <span style="color:#204a87;font-weight:bold">with</span>
+    <span style="color:#ce5c00;font-weight:bold">|</span> <span style="color:#204a87;font-weight:bold">false</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#000">None</span>
+    <span style="color:#ce5c00;font-weight:bold">|</span> <span style="color:#204a87;font-weight:bold">true</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#000">Some</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">item</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">diff</span><span style="color:#ce5c00;font-weight:bold">)</span>
+</code></pre></div><p>It wasn&rsquo;t until the second part of Day 1 that I started to rethink my solution. I started down the road of recursion and trying something like that when it finally dawned on me that all I really want is a giant list of all possible combinations of the entries, either in pairs or triplicate, and then just find the one combo that equals 2020.</p>
+
+	</div>
+	
+	
+	
+	
+	
+		
+	
+	
+	
+	<div class="tags">
+		<div class="taxosfloating_left">
+			<p>Tags</p>
+		</div>
+		<div class="termsfloating_right">
+			<p>
+			
+			
+			
+			<a href="/tags/adventofcode/"> adventofcode </a>
+			
+			
+			
+			
+			
+			<a href="/tags/code/"> code </a>
+			
+			
+			
+			
+			
+			<a href="/tags/fsharp/"> fsharp </a>
+			
+			
+			
+			</p>
+		</div>
+		<div class="clearit"></div>
+		
+		
+		
+		
+		
+	</div></div>
+
+  </main>
+
+
+
+
+
+</body>
+</html>
