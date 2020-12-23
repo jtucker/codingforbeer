@@ -4,7 +4,7 @@ date: 2020-12-04T11:06:37-05:00
 description: "My thoughts on solving Advent of Code 2020 - Day 3 with F#"
 tags: ["adventofcode", "fsharp", "code"]
 series: ["Advent of Code 2020"]
-draft: false
+draft: true
 ---
 
 ### Problem
