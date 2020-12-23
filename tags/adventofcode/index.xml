@@ -6,12 +6,24 @@
 		<description>Recent content in adventofcode on codingfor.beer</description>
 		<generator>Hugo -- gohugo.io</generator>
 		<language>en-us</language>
-		<lastBuildDate>Thu, 03 Dec 2020 16:52:37 -0500</lastBuildDate>
+		<lastBuildDate>Fri, 04 Dec 2020 11:06:37 -0500</lastBuildDate>
 		
 		<atom:link href="https://codingfor.beer/tags/adventofcode/index.xml" rel="self" type="application/rss+xml" />
 		
 		<item>
-			<title>Advent of Code 2020 - Day2</title>
+			<title>Advent of Code 2020 - Day 3</title>
+			<link>https://codingfor.beer/posts/advent-of-code-2020-day3/</link>
+			<pubDate>Fri, 04 Dec 2020 11:06:37 -0500</pubDate>
+			
+			<guid>https://codingfor.beer/posts/advent-of-code-2020-day3/</guid>
+			<description>
+				
+				My thoughts on solving Advent of Code 2020 - Day 3 with F#
+				
+			</description>
+		</item>
+		<item>
+			<title>Advent of Code 2020 - Day 2</title>
 			<link>https://codingfor.beer/posts/advent-of-code-2020-day2/</link>
 			<pubDate>Thu, 03 Dec 2020 16:52:37 -0500</pubDate>
 			
