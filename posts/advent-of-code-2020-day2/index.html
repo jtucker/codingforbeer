@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+	
+	<meta name="generator" content="Hugo 0.79.1" />
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	
+	<meta property="og:title" content="Advent of Code 2020 - Day2">
+	
+	
+	<meta name="keywords" content="adventofcode,fsharp,code"><meta name="description" content="My thoughts on solving Advent of Code 2020 - Day 2 with F#"><meta property="og:title" content="Advent of Code 2020 - Day2" />
+<meta property="og:description" content="My thoughts on solving Advent of Code 2020 - Day 2 with F#" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://codingfor.beer/posts/advent-of-code-2020-day2/" />
+<meta property="article:published_time" content="2020-12-03T16:52:37-05:00" />
+<meta property="article:modified_time" content="2020-12-03T16:52:37-05:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Advent of Code 2020 - Day2"/>
+<meta name="twitter:description" content="My thoughts on solving Advent of Code 2020 - Day 2 with F#"/>
+
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/normalize.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/main.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/all.css" />
+	<title>Advent of Code 2020 - Day2 | Coding for Beer 🍻</title></head>
+<body><header>
+	
+	<div id="titletext"><h2 id="title"><a href="https://codingfor.beer">Coding for Beer 🍻</a></h2></div>
+	<div id="title-description"><div id="social">
+			<nav>
+				<ul></ul>
+			</nav>
+		</div>
+	</div>
+	
+</header>
+<main><div class="post">
+	
+	<div class="author">
+	
+	</div>
+	<div class="post-header">
+	
+		<div class="meta">
+			
+			<div class="date">
+				<span class="day">03</span>
+				<span class="rest">Dec 2020</span>
+			</div>
+			
+		</div>
+		
+		<div class="matter">
+			<h1 class="title">Advent of Code 2020 - Day2</h1>
+		</div>
+	</div>
+	<div class="markdown">
+		<h3 id="problem">Problem</h3>
+<h4 id="part-1">Part 1</h4>
+<blockquote>
+<p>Each line gives the password policy and then the password. The password policy indicates the lowest and highest number of times a given letter must appear for the password to be valid. For example, 1-3 a means that the password must contain a at least 1 time and at most 3 times.</p>
+</blockquote>
+<h4 id="part-2">Part 2</h4>
+<blockquote>
+<p>Each policy actually describes two positions in the password, where 1 means the first character, 2 means the second character, and so on. (Be careful; Toboggan Corporate Policies have no concept of &ldquo;index zero&rdquo;!) Exactly one of these positions must contain the given letter. Other occurrences of the letter are irrelevant for the purposes of policy enforcement.</p>
+</blockquote>
+<h3 id="solution">Solution</h3>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fsi" data-lang="fsi"><span style="color:#204a87;font-weight:bold">open</span> <span style="color:#000">System</span>
+<span style="color:#204a87;font-weight:bold">open</span> <span style="color:#000">System.Text.RegularExpressions</span>
+
+<span style="color:#204a87;font-weight:bold">type</span> <span style="color:#000">PasswordLine</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+    <span style="color:#000">Positions</span> <span style="color:#ce5c00;font-weight:bold">:</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">int</span> <span style="color:#ce5c00;font-weight:bold">*</span> <span style="color:#000">int</span><span style="color:#ce5c00;font-weight:bold">)</span>
+    <span style="color:#000">Letter</span>    <span style="color:#ce5c00;font-weight:bold">:</span> <span style="color:#000">Char</span>
+    <span style="color:#000">Password</span>  <span style="color:#ce5c00;font-weight:bold">:</span> <span style="color:#000">String</span>
+<span style="color:#ce5c00;font-weight:bold">}</span>
+
+<span style="color:#204a87;font-weight:bold">module</span> <span style="color:#000">PasswordRule</span> <span style="color:#ce5c00;font-weight:bold">=</span>
+    <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">isInRange</span> <span style="color:#000">range</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">str</span><span style="color:#ce5c00;font-weight:bold">:</span> <span style="color:#000">String</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">=</span>
+        <span style="color:#204a87;font-weight:bold">match</span> <span style="color:#000">range</span> <span style="color:#204a87;font-weight:bold">with</span>
+        <span style="color:#ce5c00;font-weight:bold">|</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">lower</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">higher</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">when</span> <span style="color:#000">str</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">Length</span> <span style="color:#ce5c00;font-weight:bold">&gt;=</span> <span style="color:#000">lower</span> <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#000">str</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">Length</span> <span style="color:#ce5c00;font-weight:bold">&lt;=</span> <span style="color:#000">higher</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#204a87;font-weight:bold">true</span>
+        <span style="color:#ce5c00;font-weight:bold">|</span> <span style="color:#ce5c00;font-weight:bold">_</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#204a87;font-weight:bold">false</span>
+    
+    <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">isInPositions</span> <span style="color:#000">positions</span> <span style="color:#000">letter</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">str</span><span style="color:#ce5c00;font-weight:bold">:</span> <span style="color:#000">String</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">=</span>
+        <span style="color:#204a87;font-weight:bold">match</span> <span style="color:#000">positions</span> <span style="color:#204a87;font-weight:bold">with</span> 
+        <span style="color:#ce5c00;font-weight:bold">|</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">first</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">second</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">when</span> <span style="color:#000">str</span><span style="color:#ce5c00;font-weight:bold">.[</span><span style="color:#000">first</span> <span style="color:#ce5c00;font-weight:bold">-</span> <span style="color:#000">1</span><span style="color:#ce5c00;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">letter</span> <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#000">str</span><span style="color:#ce5c00;font-weight:bold">.[</span><span style="color:#000">second</span> <span style="color:#ce5c00;font-weight:bold">-</span> <span style="color:#000">1</span><span style="color:#ce5c00;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">letter</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#204a87;font-weight:bold">false</span>
+        <span style="color:#ce5c00;font-weight:bold">|</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">first</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">second</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">when</span> <span style="color:#000">str</span><span style="color:#ce5c00;font-weight:bold">.[</span><span style="color:#000">first</span> <span style="color:#ce5c00;font-weight:bold">-</span> <span style="color:#000">1</span><span style="color:#ce5c00;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">letter</span> <span style="color:#ce5c00;font-weight:bold">||</span> <span style="color:#000">str</span><span style="color:#ce5c00;font-weight:bold">.[</span><span style="color:#000">second</span> <span style="color:#ce5c00;font-weight:bold">-</span> <span style="color:#000">1</span><span style="color:#ce5c00;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">letter</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#204a87;font-weight:bold">true</span>
+        <span style="color:#ce5c00;font-weight:bold">|</span> <span style="color:#ce5c00;font-weight:bold">_</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#204a87;font-weight:bold">false</span>
+
+    <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">parse</span> <span style="color:#000">line</span> <span style="color:#ce5c00;font-weight:bold">=</span>
+        <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">matches</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Regex</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Match</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">line</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;(?&lt;lower&gt;</span><span style="color:#a40000">\</span><span style="color:#4e9a06">d+)-(?&lt;higher&gt;</span><span style="color:#a40000">\</span><span style="color:#4e9a06">d+) (?&lt;letter&gt;[a-z]): (?&lt;password&gt;[a-z]+)&#34;</span><span style="color:#ce5c00;font-weight:bold">)</span>
+        <span style="color:#ce5c00;font-weight:bold">{</span>
+            <span style="color:#000">Positions</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">int</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">matches</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">Groups</span><span style="color:#ce5c00;font-weight:bold">.[</span><span style="color:#4e9a06">&#34;lower&#34;</span><span style="color:#ce5c00;font-weight:bold">].</span><span style="color:#000">Value</span><span style="color:#ce5c00;font-weight:bold">),</span> <span style="color:#000">int</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">matches</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">Groups</span><span style="color:#ce5c00;font-weight:bold">.[</span><span style="color:#4e9a06">&#34;higher&#34;</span><span style="color:#ce5c00;font-weight:bold">].</span><span style="color:#000">Value</span><span style="color:#ce5c00;font-weight:bold">))</span>
+            <span style="color:#000">Letter</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#204a87;font-weight:bold">char</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">matches</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">Groups</span><span style="color:#ce5c00;font-weight:bold">.[</span><span style="color:#4e9a06">&#34;letter&#34;</span><span style="color:#ce5c00;font-weight:bold">].</span><span style="color:#000">Value</span><span style="color:#ce5c00;font-weight:bold">)</span>
+            <span style="color:#000">Password</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">matches</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">Groups</span><span style="color:#ce5c00;font-weight:bold">.[</span><span style="color:#4e9a06">&#34;password&#34;</span><span style="color:#ce5c00;font-weight:bold">].</span><span style="color:#000">Value</span>
+        <span style="color:#ce5c00;font-weight:bold">}</span>
+
+    <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">tobogganValidate</span> <span style="color:#000">rule</span> <span style="color:#ce5c00;font-weight:bold">=</span>
+        <span style="color:#000">rule</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">Password</span> <span style="color:#ce5c00;font-weight:bold">|&gt;</span> <span style="color:#000">isInPositions</span> <span style="color:#000">rule</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">Positions</span> <span style="color:#000">rule</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">Letter</span>
+
+    <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">validate</span> <span style="color:#000">rule</span> <span style="color:#ce5c00;font-weight:bold">=</span>
+        <span style="color:#000">rule</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">Password</span> <span style="color:#ce5c00;font-weight:bold">|&gt;</span> <span style="color:#000">String</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">filter</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">fun</span> <span style="color:#000">c</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#000">c</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">rule</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">Letter</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">|&gt;</span> <span style="color:#000">isInRange</span> <span style="color:#000">rule</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">Positions</span>
+
+<span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">getValidPasswordCount</span> <span style="color:#000">passwordValidator</span> <span style="color:#000">content</span> <span style="color:#ce5c00;font-weight:bold">=</span>
+    <span style="color:#000">content</span>
+    <span style="color:#ce5c00;font-weight:bold">|&gt;</span> <span style="color:#000">Seq</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">map</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">Password</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">parse</span> <span style="color:#ce5c00;font-weight:bold">&gt;&gt;</span> <span style="color:#000">passwordValidator</span><span style="color:#ce5c00;font-weight:bold">)</span>
+    <span style="color:#ce5c00;font-weight:bold">|&gt;</span> <span style="color:#000">Seq</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">filter</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">id</span><span style="color:#ce5c00;font-weight:bold">)</span>
+    <span style="color:#ce5c00;font-weight:bold">|&gt;</span> <span style="color:#000">Seq</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">length</span>
+
+<span style="color:#000">printfn</span> <span style="color:#4e9a06">&#34;The number of valid sled passwords is %i&#34;</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">getValidPasswordCount</span> <span style="color:#000">PasswordRule</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">validate</span><span style="color:#ce5c00;font-weight:bold">)</span>
+<span style="color:#000">printfn</span> <span style="color:#4e9a06">&#34;The number of valid toboggan passwords is %i&#34;</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">getValidPasswordCount</span> <span style="color:#000">PasswordRule</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">tobogganValidate</span><span style="color:#ce5c00;font-weight:bold">)</span></code></pre></div>
+<h3 id="thoughts-on-why-i-did-what-i-did">Thoughts on why I did what I did</h3>
+<p>This day was all about stretching my legs and trying to get fancy, first by generating the <code>PasswordLine</code> type and then the <code>PasswordRule</code> module.</p>
+<p>Adding the Regex was something I tried to fight and I really wanted to use <code>FParsec</code> here but ultimately it felt like it wasn&rsquo;t really meant for this type of input. That maybe just because of my lack of knowledge of the library but I really want to try using it for one of these problems.</p>
+
+	</div>
+	
+	
+	
+	
+	
+		
+	
+	
+	
+	<div class="tags">
+		<div class="taxosfloating_left">
+			<p>Series</p>
+		</div>
+		<div class="termsfloating_right">
+			<p>
+			
+			
+			
+			<a href="/series/advent-of-code-2020/"> advent-of-code-2020 </a>
+			
+			
+			
+			
+			
+			</p>
+		</div>
+		<div class="clearit"></div>
+		
+		
+		
+		
+	
+	
+	
+	<div class="tags">
+		<div class="taxosfloating_left">
+			<p>Tags</p>
+		</div>
+		<div class="termsfloating_right">
+			<p>
+			
+			
+			
+			<a href="/tags/adventofcode/"> adventofcode </a>
+			
+			
+			
+			
+			
+			
+			
+			<a href="/tags/code/"> code </a>
+			
+			
+			
+			
+			
+			
+			
+			<a href="/tags/fsharp/"> fsharp </a>
+			
+			
+			
+			
+			
+			</p>
+		</div>
+		<div class="clearit"></div>
+		
+		
+		
+		
+		
+	</div></div>
+
+  </main>
+
+
+
+
+
+</body>
+</html>
