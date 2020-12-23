@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+	
+	<meta name="generator" content="Hugo 0.79.1" />
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	
+	<meta property="og:title" content="Advent of Code 2020 - Day 3">
+	
+	
+	<meta name="keywords" content="adventofcode,fsharp,code"><meta name="description" content="My thoughts on solving Advent of Code 2020 - Day 3 with F#"><meta property="og:title" content="Advent of Code 2020 - Day 3" />
+<meta property="og:description" content="My thoughts on solving Advent of Code 2020 - Day 3 with F#" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://codingfor.beer/posts/advent-of-code-2020-day3/" />
+<meta property="article:published_time" content="2020-12-04T11:06:37-05:00" />
+<meta property="article:modified_time" content="2020-12-04T11:06:37-05:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Advent of Code 2020 - Day 3"/>
+<meta name="twitter:description" content="My thoughts on solving Advent of Code 2020 - Day 3 with F#"/>
+
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/normalize.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/main.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/all.css" />
+	<title>Advent of Code 2020 - Day 3 | Coding for Beer 🍻</title></head>
+<body><header>
+	
+	<div id="titletext"><h2 id="title"><a href="https://codingfor.beer">Coding for Beer 🍻</a></h2></div>
+	<div id="title-description"><div id="social">
+			<nav>
+				<ul></ul>
+			</nav>
+		</div>
+	</div>
+	
+</header>
+<main><div class="post">
+	
+	<div class="author">
+	
+	</div>
+	<div class="post-header">
+	
+		<div class="meta">
+			
+			<div class="date">
+				<span class="day">04</span>
+				<span class="rest">Dec 2020</span>
+			</div>
+			
+		</div>
+		
+		<div class="matter">
+			<h1 class="title">Advent of Code 2020 - Day 3</h1>
+		</div>
+	</div>
+	<div class="markdown">
+		<h3 id="problem">Problem</h3>
+<h4 id="part-1">Part 1</h4>
+<blockquote>
+<p>From your starting position at the top-left, check the position that is right 3 and down 1. Then, check the position that is right 3 and down 1 from there, and so on until you go past the bottom of the map.
+Starting at the top-left corner of your map and following a slope of right 3 and down 1, how many trees would you encounter?</p>
+</blockquote>
+<h4 id="part-2">Part 2</h4>
+<blockquote>
+<p>Determine the number of trees you would encounter if, for each of the following slopes, you start at the top-left corner and traverse the map all the way to the bottom:</p>
+</blockquote>
+<pre><code>- Right 1, down 1.
+- Right 3, down 1. (This is the slope you already checked.)
+- Right 5, down 1.
+- Right 7, down 1.
+- Right 1, down 2.
+</code></pre>
+<h3 id="solution">Solution</h3>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fsi" data-lang="fsi"><span style="color:#204a87;font-weight:bold">type</span> <span style="color:#000">Position</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+    <span style="color:#000">First</span><span style="color:#ce5c00;font-weight:bold">:</span> <span style="color:#000">int</span>
+    <span style="color:#000">Second</span><span style="color:#ce5c00;font-weight:bold">:</span> <span style="color:#000">int</span>
+<span style="color:#ce5c00;font-weight:bold">}</span>
+
+<span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">calcTrees</span> <span style="color:#000">arrContent</span> <span style="color:#000">slopes</span> <span style="color:#ce5c00;font-weight:bold">=</span>
+    <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">startState</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#ce5c00;font-weight:bold">({</span> <span style="color:#000">First</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">0</span><span style="color:#ce5c00;font-weight:bold">;</span> <span style="color:#000">Second</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">0</span> <span style="color:#ce5c00;font-weight:bold">},</span> <span style="color:#000">0</span><span style="color:#ce5c00;font-weight:bold">)</span>
+
+    <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">movePosition</span> <span style="color:#000">slope</span> <span style="color:#000">position</span> <span style="color:#000">maxLength</span> <span style="color:#ce5c00;font-weight:bold">=</span>
+        <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">right</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">down</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">slope</span>
+        <span style="color:#204a87;font-weight:bold">match</span> <span style="color:#000">position</span> <span style="color:#204a87;font-weight:bold">with</span>
+        <span style="color:#ce5c00;font-weight:bold">|</span> <span style="color:#000">p</span> <span style="color:#204a87;font-weight:bold">when</span> <span style="color:#000">p</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">First</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#000">down</span> <span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#000">maxLength</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#000">None</span>
+        <span style="color:#ce5c00;font-weight:bold">|</span> <span style="color:#ce5c00;font-weight:bold">_</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#000">Some</span> <span style="color:#ce5c00;font-weight:bold">({</span> <span style="color:#000">position</span> <span style="color:#204a87;font-weight:bold">with</span> <span style="color:#000">First</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">position</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">First</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#000">down</span><span style="color:#ce5c00;font-weight:bold">;</span> <span style="color:#000">Second</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">position</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">Second</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#000">right</span> <span style="color:#ce5c00;font-weight:bold">})</span>
+
+    <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">isTree</span> <span style="color:#ce5c00;font-weight:bold">=</span>
+        <span style="color:#204a87;font-weight:bold">function</span> <span style="color:#ce5c00;font-weight:bold">|</span> <span style="color:#4e9a06">&#39;#&#39;</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#000">1</span>
+                <span style="color:#ce5c00;font-weight:bold">|</span> <span style="color:#ce5c00;font-weight:bold">_</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#000">0</span>
+
+    <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">rec</span> <span style="color:#000">arrFold</span> <span style="color:#000">slope</span> <span style="color:#000">state</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">array</span><span style="color:#ce5c00;font-weight:bold">:</span> <span style="color:#204a87;font-weight:bold">char</span> <span style="color:#ce5c00;font-weight:bold">[,])</span> <span style="color:#ce5c00;font-weight:bold">=</span>
+        <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">position</span><span style="color:#ce5c00;font-weight:bold">:</span> <span style="color:#000">Position</span><span style="color:#ce5c00;font-weight:bold">),</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">trees</span><span style="color:#ce5c00;font-weight:bold">:</span><span style="color:#000">int</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">state</span>
+        <span style="color:#204a87;font-weight:bold">match</span> <span style="color:#000">movePosition</span> <span style="color:#000">slope</span> <span style="color:#000">position</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">Array2D</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">length1</span> <span style="color:#000">array</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">with</span>
+        <span style="color:#ce5c00;font-weight:bold">|</span> <span style="color:#000">None</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#000">state</span>
+        <span style="color:#ce5c00;font-weight:bold">|</span> <span style="color:#000">Some</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">p</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#000">arrFold</span> <span style="color:#000">slope</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">p</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">trees</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">isTree</span> <span style="color:#000">array</span><span style="color:#ce5c00;font-weight:bold">.[</span><span style="color:#000">position</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">First</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">position</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">Second</span> <span style="color:#ce5c00;font-weight:bold">%</span> <span style="color:#000">31</span><span style="color:#ce5c00;font-weight:bold">]))</span> <span style="color:#000">array</span>
+
+    <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">treeMapper</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">fun</span> <span style="color:#000">s</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#000">arrFold</span> <span style="color:#000">s</span> <span style="color:#000">startState</span> <span style="color:#000">arrContent</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">&gt;&gt;</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">fun</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">p</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">trees</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#204a87;font-weight:bold">int64</span> <span style="color:#000">trees</span><span style="color:#ce5c00;font-weight:bold">)</span>
+
+    <span style="color:#000">slopes</span> 
+    <span style="color:#ce5c00;font-weight:bold">|&gt;</span> <span style="color:#000">List</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">map</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">treeMapper</span><span style="color:#ce5c00;font-weight:bold">)</span> 
+    <span style="color:#ce5c00;font-weight:bold">|&gt;</span> <span style="color:#000">List</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">reduce</span> <span style="color:#ce5c00;font-weight:bold">((*))</span>
+
+<span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">singleSlope</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#ce5c00;font-weight:bold">[(</span><span style="color:#000">3</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">1</span><span style="color:#ce5c00;font-weight:bold">)]</span>
+<span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">singleSlopeTreeCount</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">calcTrees</span> <span style="color:#000">arrContent</span> <span style="color:#000">singleSlope</span>
+<span style="color:#000">printfn</span> <span style="color:#4e9a06">&#34;Number of trees: %i&#34;</span> <span style="color:#000">singleSlopeTreeCount</span>
+
+<span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">slopes</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#ce5c00;font-weight:bold">[(</span><span style="color:#000">1</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">1</span><span style="color:#ce5c00;font-weight:bold">);</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">3</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">1</span><span style="color:#ce5c00;font-weight:bold">);</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">5</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">1</span><span style="color:#ce5c00;font-weight:bold">);</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">7</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">1</span><span style="color:#ce5c00;font-weight:bold">);</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">1</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">2</span><span style="color:#ce5c00;font-weight:bold">)]</span>
+<span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">slopesTreeCount</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">caclTrees</span> <span style="color:#000">arrContent</span> <span style="color:#000">slopes</span>
+<span style="color:#000">printfn</span> <span style="color:#4e9a06">&#34;Number of trees in all slopes: %i&#34;</span> <span style="color:#000">slopesTreeCount</span></code></pre></div>
+<h3 id="thoughts-on-why-i-did-what-i-did">Thoughts on why I did what I did</h3>
+<p>This problem really broke down to moving through a grid at a defined <code>x</code> and <code>y</code> coordinate all the while incrementing a counter based on if the positional character was a tree or not.</p>
+<p>Sounds like a <code>fold</code> to me.</p>
+<p>The process of moving from Part 1 to Part 2 didn&rsquo;t really require much tweaking, I only ended up pulling out the slopes into an array of Tuples. The folding function starts with a state value tuple defined as <code>(Postion * int)</code>  and threads it through each time moving the <code>Position</code> type based on current slope. For each execution the position is tested to see if the <code>down</code> movement will exceed the length of the file and if not, is moved. The new position is then passed to the fold function while also determining if the new position contains a tree.</p>
+<p>The incoming data is read line by line from the file system and then piped into <code>array2d</code> function turning it into a 2 dimensional array of <code>char</code>. In hindsight, I should probably go back and rename the <code>Position</code> values (<code>First</code> and <code>Second</code>) as they are actually flipped when moving through the grid.</p>
+
+	</div>
+	
+	
+	
+	
+	
+		
+	
+	
+	
+	<div class="tags">
+		<div class="taxosfloating_left">
+			<p>Series</p>
+		</div>
+		<div class="termsfloating_right">
+			<p>
+			
+			
+			
+			<a href="/series/advent-of-code-2020/"> advent-of-code-2020 </a>
+			
+			
+			
+			
+			
+			
+			
+			</p>
+		</div>
+		<div class="clearit"></div>
+		
+		
+		
+		
+	
+	
+	
+	<div class="tags">
+		<div class="taxosfloating_left">
+			<p>Tags</p>
+		</div>
+		<div class="termsfloating_right">
+			<p>
+			
+			
+			
+			<a href="/tags/adventofcode/"> adventofcode </a>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			<a href="/tags/code/"> code </a>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			<a href="/tags/fsharp/"> fsharp </a>
+			
+			
+			
+			
+			
+			
+			
+			</p>
+		</div>
+		<div class="clearit"></div>
+		
+		
+		
+		
+		
+	</div></div>
+
+  </main>
+
+
+
+
+
+</body>
+</html>
