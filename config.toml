@@ -1,4 +1,4 @@
-baseURL = "https://codingforbeer.github.io/"
+baseURL = "https://codingfor.beer"
 languageCode = "en-us"
 title = "Coding for Beer 🍻"
 
@@ -7,3 +7,8 @@ theme = "vitae"
 pygmentsstyle = "tango"
 pygmentscodefences = true
 pygmentscodefencesguesssyntax = true
+
+[taxonomies]
+	tag = "tags"
+	category = "categories"
+	series = "series"

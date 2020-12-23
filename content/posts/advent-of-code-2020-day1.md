@@ -3,6 +3,7 @@ title: "Advent of Code 2020 - Day 1"
 date: 2020-12-02T09:47:58-05:00
 description: "My thoughts on solving Advent of Code 2020 - Day 1 with F#"
 tags: ["adventofcode", "fsharp", "code"]
+series: ["Advent of Code 2020"]
 draft: false
 ---
 
