@@ -1,5 +1,5 @@
 ---
-title: "Advent of Code 2020 - Day2"
+title: "Advent of Code 2020 - Day 2"
 date: 2020-12-03T16:52:37-05:00
 description: "My thoughts on solving Advent of Code 2020 - Day 2 with F#"
 tags: ["adventofcode", "fsharp", "code"]
