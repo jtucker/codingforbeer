@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+	
+	<meta name="generator" content="Hugo 0.79.1" />
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	
+	<meta property="og:title" content="Advent of Code 2020 - Day 5">
+	
+	
+	<meta name="keywords" content="adventofcode,fsharp,code"><meta name="description" content="My thoughts on solving Advent of Code 2020 - Day 5 with F#"><meta property="og:title" content="Advent of Code 2020 - Day 5" />
+<meta property="og:description" content="My thoughts on solving Advent of Code 2020 - Day 5 with F#" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://codingfor.beer/posts/advent-of-code-2020-day5/" />
+<meta property="article:published_time" content="2020-12-06T23:22:37-05:00" />
+<meta property="article:modified_time" content="2020-12-06T23:22:37-05:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Advent of Code 2020 - Day 5"/>
+<meta name="twitter:description" content="My thoughts on solving Advent of Code 2020 - Day 5 with F#"/>
+
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/normalize.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/main.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/all.css" />
+	<title>Advent of Code 2020 - Day 5 | Coding for Beer 🍻</title></head>
+<body><header>
+	
+	<div id="titletext"><h2 id="title"><a href="https://codingfor.beer">Coding for Beer 🍻</a></h2></div>
+	<div id="title-description"><div id="social">
+			<nav>
+				<ul></ul>
+			</nav>
+		</div>
+	</div>
+	
+</header>
+<main><div class="post">
+	
+	<div class="author">
+	
+	</div>
+	<div class="post-header">
+	
+		<div class="meta">
+			
+			<div class="date">
+				<span class="day">06</span>
+				<span class="rest">Dec 2020</span>
+			</div>
+			
+		</div>
+		
+		<div class="matter">
+			<h1 class="title">Advent of Code 2020 - Day 5</h1>
+		</div>
+	</div>
+	<div class="markdown">
+		<h3 id="problem">Problem</h3>
+<h4 id="part-1">Part 1</h4>
+<blockquote>
+<p>For example, consider just the last 3 characters of FBFBBFFRLR:</p>
+</blockquote>
+<pre><code>- Start by considering the whole range, columns 0 through 7.
+- R means to take the upper half, keeping columns 4 through 7.
+- L means to take the lower half, keeping columns 4 through 5.
+- The final R keeps the upper of the two, column 5.
+</code></pre>
+<blockquote>
+<p>So, decoding FBFBBFFRLR reveals that it is the seat at row 44, column 5.
+Every seat also has a unique seat ID: multiply the row by 8, then add the column. In this example, the seat has ID 44 * 8 + 5 = 357.</p>
+</blockquote>
+<blockquote>
+<p>What is the highest seat ID on a boarding pass?</p>
+</blockquote>
+<h4 id="part-2">Part 2</h4>
+<blockquote>
+<p>It&rsquo;s a completely full flight, so your seat should be the only missing boarding pass in your list. However, there&rsquo;s a catch: some of the seats at the very front and back of the plane don&rsquo;t exist on this aircraft, so they&rsquo;ll be missing from your list as well.</p>
+</blockquote>
+<blockquote>
+<p>Your seat wasn&rsquo;t at the very front or back, though; the seats with IDs +1 and -1 from yours will be in your list.</p>
+</blockquote>
+<blockquote>
+<p>What is the ID of your seat?</p>
+</blockquote>
+<h3 id="solution">Solution</h3>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fsi" data-lang="fsi"><span style="color:#204a87;font-weight:bold">module</span> <span style="color:#000">codingforbeer.AdventOfCode.Day5</span>
+
+<span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">inputLines</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">fileLines</span> <span style="color:#4e9a06">@&#34;2020\assets\day5.txt&#34;</span>
+
+<span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">getSeatList</span> <span style="color:#000">input</span> <span style="color:#ce5c00;font-weight:bold">=</span> 
+    <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">split</span> <span style="color:#000">x</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Seq</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">toList</span> <span style="color:#000">x</span> <span style="color:#ce5c00;font-weight:bold">|&gt;</span> <span style="color:#000">List</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">splitAt</span> <span style="color:#000">7</span>
+    <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">positionFolder</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">range</span><span style="color:#ce5c00;font-weight:bold">:</span> <span style="color:#000">int</span> <span style="color:#204a87;font-weight:bold">list</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#000">half</span> <span style="color:#ce5c00;font-weight:bold">=</span>
+        <span style="color:#204a87;font-weight:bold">match</span> <span style="color:#000">half</span> <span style="color:#204a87;font-weight:bold">with</span>
+        <span style="color:#ce5c00;font-weight:bold">|</span> <span style="color:#4e9a06">&#39;F&#39;</span> <span style="color:#ce5c00;font-weight:bold">|</span> <span style="color:#4e9a06">&#39;L&#39;</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span>  <span style="color:#000">range</span><span style="color:#ce5c00;font-weight:bold">.[..</span> <span style="color:#000">range</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">Length</span> <span style="color:#ce5c00;font-weight:bold">/</span> <span style="color:#000">2</span> <span style="color:#ce5c00;font-weight:bold">-</span> <span style="color:#000">1</span><span style="color:#ce5c00;font-weight:bold">]</span>
+        <span style="color:#ce5c00;font-weight:bold">|</span> <span style="color:#4e9a06">&#39;B&#39;</span> <span style="color:#ce5c00;font-weight:bold">|</span> <span style="color:#4e9a06">&#39;R&#39;</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#000">range</span><span style="color:#ce5c00;font-weight:bold">.[</span><span style="color:#000">range</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">Length</span> <span style="color:#ce5c00;font-weight:bold">/</span> <span style="color:#000">2</span> <span style="color:#ce5c00;font-weight:bold">..]</span>
+        <span style="color:#ce5c00;font-weight:bold">|</span> <span style="color:#ce5c00;font-weight:bold">_</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#000">range</span>
+
+    <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">seatNumber</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">row</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">col</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">=</span> 
+        <span style="color:#204a87;font-weight:bold">match</span> <span style="color:#000">row</span> <span style="color:#204a87;font-weight:bold">with</span>
+        <span style="color:#ce5c00;font-weight:bold">|</span> <span style="color:#ce5c00;font-weight:bold">[</span><span style="color:#000">x</span><span style="color:#ce5c00;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#204a87;font-weight:bold">match</span> <span style="color:#000">col</span> <span style="color:#204a87;font-weight:bold">with</span>
+                 <span style="color:#ce5c00;font-weight:bold">|</span> <span style="color:#ce5c00;font-weight:bold">[</span><span style="color:#000">y</span><span style="color:#ce5c00;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#000">x</span> <span style="color:#ce5c00;font-weight:bold">*</span> <span style="color:#000">8</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#000">y</span>
+                 <span style="color:#ce5c00;font-weight:bold">|</span> <span style="color:#ce5c00;font-weight:bold">_</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#000">0</span>
+        <span style="color:#ce5c00;font-weight:bold">|</span> <span style="color:#ce5c00;font-weight:bold">_</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#000">0</span>
+
+    <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">getPosition</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">rows</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">cols</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">=</span>
+        <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">rows</span> <span style="color:#ce5c00;font-weight:bold">|&gt;</span> <span style="color:#000">List</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">fold</span> <span style="color:#000">positionFolder</span> <span style="color:#ce5c00;font-weight:bold">[</span><span style="color:#000">0</span><span style="color:#ce5c00;font-weight:bold">..</span><span style="color:#000">127</span><span style="color:#ce5c00;font-weight:bold">],</span> <span style="color:#000">cols</span> <span style="color:#ce5c00;font-weight:bold">|&gt;</span> <span style="color:#000">List</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">fold</span> <span style="color:#000">positionFolder</span> <span style="color:#ce5c00;font-weight:bold">[</span><span style="color:#000">0</span><span style="color:#ce5c00;font-weight:bold">..</span><span style="color:#000">7</span><span style="color:#ce5c00;font-weight:bold">])</span>
+    
+    <span style="color:#000">input</span> <span style="color:#ce5c00;font-weight:bold">|&gt;</span> <span style="color:#000">Seq</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">map</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">split</span> <span style="color:#ce5c00;font-weight:bold">&gt;&gt;</span> <span style="color:#000">getPosition</span> <span style="color:#ce5c00;font-weight:bold">&gt;&gt;</span> <span style="color:#000">seatNumber</span><span style="color:#ce5c00;font-weight:bold">)</span>
+    
+<span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">seatList</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">getSeatList</span> <span style="color:#000">inputLines</span>
+<span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">getHighestSeat</span> <span style="color:#ce5c00;font-weight:bold">=</span>  <span style="color:#000">seatList</span> <span style="color:#ce5c00;font-weight:bold">|&gt;</span> <span style="color:#000">Seq</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">max</span>
+<span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">getLowestSeat</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">seatList</span> <span style="color:#ce5c00;font-weight:bold">|&gt;</span> <span style="color:#000">Seq</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">min</span>
+<span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">seatRange</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#ce5c00;font-weight:bold">[</span><span style="color:#000">getLowestSeat</span> <span style="color:#ce5c00;font-weight:bold">..</span> <span style="color:#000">getHighestSeat</span><span style="color:#ce5c00;font-weight:bold">]</span>
+<span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">missing</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">seatRange</span> <span style="color:#ce5c00;font-weight:bold">|&gt;</span> <span style="color:#000">List</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">except</span> <span style="color:#000">seatList</span>
+
+<span style="color:#000">printfn</span> <span style="color:#4e9a06">&#34;Highest Seat: %i&#34;</span> <span style="color:#000">getHighestSeat</span>
+<span style="color:#000">printfn</span> <span style="color:#4e9a06">&#34;Missing Seat: %i&#34;</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">List</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">head</span> <span style="color:#000">missing</span><span style="color:#ce5c00;font-weight:bold">)</span></code></pre></div>
+<h3 id="thoughts-on-why-i-did-what-i-did">Thoughts on why I did what I did</h3>
+<p>For getting the input data, I read the data line via line from a text file into the symbol <code>inputLines</code>. This gave me a <code>string []</code>  of my puzzle data.</p>
+<p>From there I converted each string in the array into an array of chars and then split at the 7th position. I now had a list of tuples consisting of the first 7 chars representing the row position and one containing the column positions. I then worked on getting the seat position on the plane via the rules in the problem. While I was reading the problem statement I knew I would be leaning toward a <code>fold</code>  for doing the heavy lifting. Once I had my method for determining which half of the provided range I would use, this would then produce a new list of tuples containing the row and col positions that would then be converted into a list of seat positions. Once I had a list of all the seat numbers it was easy to get the highest seat ID via the <code>max</code>  function.</p>
+<p>For part two, there is a call out about the <code>+1</code>  and the <code>-1</code> seats being in the list of ID&rsquo;s but I didn&rsquo;t really care about those. My idea consisted of finding the smallest seat ID (via the <code>min</code>  function) and using that with the highest seat ID to create a new list of seat IDs. Next I then used the <code>except</code>  function to create a new list of missing items, took the first value and it turned out to be the missing seat.</p>
+
+	</div>
+	
+	
+	
+	
+	
+		
+	
+	
+	
+	<div class="tags">
+		<div class="taxosfloating_left">
+			<p>Series</p>
+		</div>
+		<div class="termsfloating_right">
+			<p>
+			
+			
+			
+			<a href="/series/advent-of-code-2020/"> advent-of-code-2020 </a>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			</p>
+		</div>
+		<div class="clearit"></div>
+		
+		
+		
+		
+	
+	
+	
+	<div class="tags">
+		<div class="taxosfloating_left">
+			<p>Tags</p>
+		</div>
+		<div class="termsfloating_right">
+			<p>
+			
+			
+			
+			<a href="/tags/adventofcode/"> adventofcode </a>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			<a href="/tags/code/"> code </a>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			<a href="/tags/fsharp/"> fsharp </a>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			</p>
+		</div>
+		<div class="clearit"></div>
+		
+		
+		
+		
+		
+	</div></div>
+
+  </main>
+
+
+
+
+
+</body>
+</html>
