@@ -12,3 +12,10 @@ pygmentscodefencesguesssyntax = true
 	tag = "tags"
 	category = "categories"
 	series = "series"
+
+[params.comments]
+enabled = true
+engine = "utterances"
+
+# Content types to disable comments on.
+#disableOnTypes = ["page"]
