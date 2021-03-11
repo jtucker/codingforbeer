@@ -114,8 +114,9 @@ I ended up using a combo of GitHub Actions and a simple F# script to get the wor
   <img src="/posts/adding-untappd-checkins-secrets.png" alt="Secrets Example"  />
 </figure></p>
 <h3 id="setting-up-the-workflow">Setting up the workflow</h3>
-<p>I then created a new workflow called <code>untappd.yaml</code> in the <code>.github/workflows</code> folder in my repo.</p>
-<!-- raw HTML omitted -->
+<p>I then created a new workflow called <code>untappd.yaml</code> in the <code>.github/workflows</code> folder in my repo. 
+<script type="application/javascript" src="https://gist.github.com/jtucker/6662b6eba4361e803747407e05d2f0e5.js"></script>
+</p>
 <p>So what happens here?</p>
 <ol>
 <li>Install <a href="https://dot.net" target="_blank">dotnet</a> 5</li>
@@ -126,7 +127,8 @@ I ended up using a combo of GitHub Actions and a simple F# script to get the wor
 <li>Commit the updated file if necessary. The secret is to make sure that <code>skip_dirty_check</code> is set to false, otherwise it will always commit and mess up my history.</li>
 </ol>
 <h3 id="the-f-script">The F# Script</h3>
-<!-- raw HTML omitted -->
+<script type="application/javascript" src="https://gist.github.com/jtucker/ce81eea00e79dc176c16ea015df0d262.js"></script>
+
 <ol>
 <li>Use the JSONProvider from F# Data package to generate types based on the parsed JSON</li>
 <li>Read in the entire <code>README.asciidoc</code> file</li>
