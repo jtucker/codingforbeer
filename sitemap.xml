@@ -3,6 +3,36 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://codingfor.beer/posts/adding-untappd-checkins/</loc>
+    <lastmod>2021-03-11T14:36:45-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://codingfor.beer/tags/beer/</loc>
+    <lastmod>2021-03-11T14:36:45-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://codingfor.beer/</loc>
+    <lastmod>2021-03-11T14:36:45-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://codingfor.beer/tags/github/</loc>
+    <lastmod>2021-03-11T14:36:45-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://codingfor.beer/posts/</loc>
+    <lastmod>2021-03-11T14:36:45-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://codingfor.beer/tags/</loc>
+    <lastmod>2021-03-11T14:36:45-05:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://codingfor.beer/series/advent-of-code-2020/</loc>
     <lastmod>2020-12-08T00:05:37-05:00</lastmod>
   </url>
@@ -23,27 +53,12 @@
   </url>
   
   <url>
-    <loc>https://codingfor.beer/</loc>
-    <lastmod>2020-12-08T00:05:37-05:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://codingfor.beer/tags/fsharp/</loc>
     <lastmod>2020-12-08T00:05:37-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://codingfor.beer/posts/</loc>
-    <lastmod>2020-12-08T00:05:37-05:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://codingfor.beer/series/</loc>
-    <lastmod>2020-12-08T00:05:37-05:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://codingfor.beer/tags/</loc>
     <lastmod>2020-12-08T00:05:37-05:00</lastmod>
   </url>
   

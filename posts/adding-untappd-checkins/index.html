@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+	
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-SNW7ZD8KVB"></script>
+	<script>
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+
+	gtag('config', 'G-SNW7ZD8KVB');
+	</script>
+	
+	<meta name="generator" content="Hugo 0.79.1" />
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	
+	<meta property="og:title" content="Addding my Untappd Checkins to my GitHub Profile README">
+	
+	
+	<meta name="keywords" content="github,beer"><meta property="og:title" content="Addding my Untappd Checkins to my GitHub Profile README" />
+<meta property="og:description" content="Recently, I wanted to give my GitHub Profile README a little sprucing up. In what probably took longer than it should, I decided I wanted to include my Untappd checkins at the bottom of the page.
+I&rsquo;m actually quite embarrassed in how long it took me to decide that, seeing how this blog is called &ldquo;Coding for Beer&rdquo;.
+I ended up using a combo of GitHub Actions and a simple F# script to get the work done." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://codingfor.beer/posts/adding-untappd-checkins/" />
+<meta property="article:published_time" content="2021-03-11T14:36:45-05:00" />
+<meta property="article:modified_time" content="2021-03-11T14:36:45-05:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Addding my Untappd Checkins to my GitHub Profile README"/>
+<meta name="twitter:description" content="Recently, I wanted to give my GitHub Profile README a little sprucing up. In what probably took longer than it should, I decided I wanted to include my Untappd checkins at the bottom of the page.
+I&rsquo;m actually quite embarrassed in how long it took me to decide that, seeing how this blog is called &ldquo;Coding for Beer&rdquo;.
+I ended up using a combo of GitHub Actions and a simple F# script to get the work done."/>
+
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/normalize.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/main.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/all.css" />
+	<title>Addding my Untappd Checkins to my GitHub Profile README | Coding for Beer 🍻</title><script type="text/javascript">
+		window.heap=window.heap||[],heap.load=function(e,t){window.heap.appid=e,window.heap.config=t=t||{};var r=document.createElement("script");r.type="text/javascript",r.async=!0,r.src="https://cdn.heapanalytics.com/js/heap-"+e+".js";var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(r,a);for(var n=function(e){return function(){heap.push([e].concat(Array.prototype.slice.call(arguments,0)))}},p=["addEventProperties","addUserProperties","clearEventProperties","identify","resetIdentity","removeEventProperty","setEventProperties","track","unsetEventProperty"],o=0;o<p.length;o++)heap[p[o]]=n(p[o])};
+		heap.load("2557766162");
+	</script>
+</head>
+<body><header>
+	
+	<div id="titletext"><h2 id="title"><a href="https://codingfor.beer">Coding for Beer 🍻</a></h2></div>
+	<div id="title-description"><div id="social">
+			<nav>
+				<ul></ul>
+			</nav>
+		</div>
+	</div>
+	
+</header>
+<main><div class="post">
+	
+	<div class="author">
+	
+	</div>
+	<div class="post-header">
+	
+		<div class="meta">
+			
+			<div class="date">
+				<span class="day">11</span>
+				<span class="rest">Mar 2021</span>
+			</div>
+			
+		</div>
+		
+		<div class="matter">
+			<h1 class="title">Addding my Untappd Checkins to my GitHub Profile README</h1>
+		</div>
+	</div>
+	<div class="markdown">
+		<p>Recently, I wanted to give my <a href="https://github.com/jtucker" target="_blank">GitHub Profile README</a> a little sprucing up. In what probably took longer than it should, I decided I wanted to include my <a href="https://untappd.com/user/jtucker" target="_blank">Untappd</a> checkins at the bottom of the page.</p>
+<p>I&rsquo;m actually quite embarrassed in how long it took me to decide that, seeing how this blog is called &ldquo;Coding for Beer&rdquo;.</p>
+<p>I ended up using a combo of <a href="https://github.com/features/actions" target="_blank">GitHub Actions</a> and a simple F# script to get the work done.</p>
+<h3 id="goal">Goal</h3>
+<p>The idea was generating a simple table of my 3 most recent checkins on Untappd. I wanted that table to contain:</p>
+<ol>
+<li>A picture if I took one.</li>
+<li>The name and brewery of the beer.</li>
+<li>The rating I gave it.</li>
+</ol>
+<h3 id="initial-ideas">Initial ideas</h3>
+<p>Here I would like to list out the first couple iterations of this solution before finally selecting the one I&rsquo;m currently using.</p>
+<ol>
+<li>
+<p>An all GitHub workflow version.</p>
+<p>This actually worked fairly well but the action I used for generating the table was very limited.</p>
+</li>
+<li>
+<p>Generate an image via Azure Function (or similar).</p>
+<p>This one I didn&rsquo;t even start because I wanted to keep it all in GitHub</p>
+</li>
+<li>
+<p>Use some sort of templating engine to output the AsciiDoc/Markdown.</p>
+<p>I found the current state of cli based template engines to be lacking. Also, I didn&rsquo;t put much time into researching this past a few hours of google-bing.</p>
+</li>
+<li>
+<p>AsciiDoc generation with includes.</p>
+<p>This would have been great and my choosen solution. <a href="https://github.com/github/markup/issues/1095" target="_blank">Unfortunately GitHub</a> currently doesn&rsquo;t support the <code>include::</code>  statement at the moment.</p>
+</li>
+</ol>
+<h3 id="solution">Solution</h3>
+<blockquote>
+<p><strong>tl;dr</strong> I ended up using GitHub actions to download and parse my Untappd activity. From there I used an F# script to read in the data, generate the table HTML and output the updated file.</p>
+</blockquote>
+<h3 id="create-an-untappd-app">Create an Untappd App</h3>
+<p>First I needed to create an app registration over on Untappd. <a href="https://untappd.com/api/dashboard" target="_blank">That is done on this site</a>.</p>
+<p>Once that was approved I was given a <code>Client ID</code> and a <code>Client Secret</code> to use later to make authenticated calls to pull my activity from the site.</p>
+<p>I then created two repository secrets in my profile repo lat look like this:</p>
+<p><figure>
+  <img src="/static/posts/adding-untappd-checkins-secrets.png" alt="Secrets Example"  />
+</figure></p>
+<h3 id="setting-up-the-workflow">Setting up the workflow</h3>
+<p>I then created a new workflow called <code>untappd.yaml</code> in the <code>.github/workflows</code> folder in my repo.</p>
+<!-- raw HTML omitted -->
+<p>So what happens here?</p>
+<ol>
+<li>Install <a href="https://dot.net" target="_blank">dotnet</a> 5</li>
+<li>Install the <a href="https://stedolan.github.io/jq/" target="_blank">jq</a> cli</li>
+<li>Get my 3 most recent checkins via <code>curl</code>. The url is tokenized for GitHub to inject my secrets into.</li>
+<li>Use jq to parse the JSON and extract the pieces I want</li>
+<li>Run my F# script to generate the updated <code>README.asciidoc</code></li>
+<li>Commit the updated file if necessary. The secret is to make sure that <code>skip_dirty_check</code> is set to false, otherwise it will always commit and mess up my history.</li>
+</ol>
+<h3 id="the-f-script">The F# Script</h3>
+<!-- raw HTML omitted -->
+<ol>
+<li>Use the JSONProvider from F# Data package to generate types based on the parsed JSON</li>
+<li>Read in the entire <code>README.asciidoc</code> file</li>
+<li>Perform a Regex match to pull out all the text between <code>// untappd beer</code> and <code> //untappd end</code> markers</li>
+<li>Generate the HTML table from the checkins</li>
+<li>Finally, update the <code>README.asciidoc</code> with the (possibly) new content</li>
+</ol>
+<h3 id="some-thoughts">Some thoughts</h3>
+<p>All in all the process was pretty smooth. I especially loved that the <a href="https://github.com/stefanzweifel/git-auto-commit-action" target="_blank">stefanzweifel/git-auto-commit-action</a> had built into functionality to not commmit a file that hasn&rsquo;t been updated. Another thing that helped during the process of putting this together was the <a href="https://github.com/nektos/act" target="_blank">act</a> testing tool that allowed me to debug my workflow locally. I really wish there was one of these for Azure Pipelines.</p>
+
+	</div>
+	
+	
+	
+	
+	
+		
+	
+		
+	
+	
+	
+	<div class="tags">
+		<div class="taxosfloating_left">
+			<p>Tags</p>
+		</div>
+		<div class="termsfloating_right">
+			<p>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			<a href="/tags/beer/"> beer </a>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			<a href="/tags/github/"> github </a>
+			
+			
+			
+			</p>
+		</div>
+		<div class="clearit"></div>
+		
+		
+		
+		
+		
+	</div>
+<script src="https://utteranc.es/client.js"
+        repo="jtucker/codingforbeer"
+        issue-term="og:title"
+        theme="boxy-light"
+        crossorigin="anonymous"
+        async>
+</script>
+
+</div>
+
+  </main>
+
+
+
+
+
+</body>
+</html>
