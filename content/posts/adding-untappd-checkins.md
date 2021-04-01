@@ -47,13 +47,12 @@ Once that was approved I was given a `Client ID` and a `Client Secret` to use la
 
 I then created two repository secrets in my profile repo lat look like this:
 
-![Secrets Example](/static/posts/adding-untappd-checkins-secrets.png)
+![Secrets Example](/posts/adding-untappd-checkins-secrets.png)
 
 ### Setting up the workflow
 
 I then created a new workflow called `untappd.yaml` in the `.github/workflows` folder in my repo. 
-
-<script src="https://gist.github.com/jtucker/6662b6eba4361e803747407e05d2f0e5.js"></script>
+{{< gist jtucker 6662b6eba4361e803747407e05d2f0e5 >}}
 
 So what happens here?
 
@@ -65,7 +64,7 @@ So what happens here?
 1. Commit the updated file if necessary. The secret is to make sure that `skip_dirty_check` is set to false, otherwise it will always commit and mess up my history. 
 
 ### The F# Script
-<script src="https://gist.github.com/jtucker/ce81eea00e79dc176c16ea015df0d262.js"></script>
+{{< gist jtucker ce81eea00e79dc176c16ea015df0d262 >}}
 
 1. Use the JSONProvider from F# Data package to generate types based on the parsed JSON
 1. Read in the entire `README.asciidoc` file
