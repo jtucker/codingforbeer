@@ -6,10 +6,22 @@
 		<description>Recent content on codingfor.beer</description>
 		<generator>Hugo -- gohugo.io</generator>
 		<language>en-us</language>
-		<lastBuildDate>Thu, 11 Mar 2021 14:36:45 -0500</lastBuildDate>
+		<lastBuildDate>Thu, 01 Apr 2021 11:00:39 -0400</lastBuildDate>
 		
 		<atom:link href="https://codingfor.beer/index.xml" rel="self" type="application/rss+xml" />
 		
+		<item>
+			<title>Revert Messed up Ubuntu install of Gnome 40</title>
+			<link>https://codingfor.beer/posts/revert-messedup-ubuntu-gnome-40/</link>
+			<pubDate>Thu, 01 Apr 2021 11:00:39 -0400</pubDate>
+			
+			<guid>https://codingfor.beer/posts/revert-messedup-ubuntu-gnome-40/</guid>
+			<description>
+				
+				I tend to run the latest and greatest dev version of Ubuntu on my laptop (Surface Book 2 currently) and wanted to check ...
+				
+			</description>
+		</item>
 		<item>
 			<title>Addding my Untappd Checkins to my GitHub Profile README</title>
 			<link>https://codingfor.beer/posts/adding-untappd-checkins/</link>

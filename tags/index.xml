@@ -6,10 +6,46 @@
 		<description>Recent content in Tags on codingfor.beer</description>
 		<generator>Hugo -- gohugo.io</generator>
 		<language>en-us</language>
-		<lastBuildDate>Thu, 11 Mar 2021 14:36:45 -0500</lastBuildDate>
+		<lastBuildDate>Thu, 01 Apr 2021 11:00:39 -0400</lastBuildDate>
 		
 		<atom:link href="https://codingfor.beer/tags/index.xml" rel="self" type="application/rss+xml" />
 		
+		<item>
+			<title>gnome</title>
+			<link>https://codingfor.beer/tags/gnome/</link>
+			<pubDate>Thu, 01 Apr 2021 11:00:39 -0400</pubDate>
+			
+			<guid>https://codingfor.beer/tags/gnome/</guid>
+			<description>
+				
+				
+				
+			</description>
+		</item>
+		<item>
+			<title>linux</title>
+			<link>https://codingfor.beer/tags/linux/</link>
+			<pubDate>Thu, 01 Apr 2021 11:00:39 -0400</pubDate>
+			
+			<guid>https://codingfor.beer/tags/linux/</guid>
+			<description>
+				
+				
+				
+			</description>
+		</item>
+		<item>
+			<title>ubuntu</title>
+			<link>https://codingfor.beer/tags/ubuntu/</link>
+			<pubDate>Thu, 01 Apr 2021 11:00:39 -0400</pubDate>
+			
+			<guid>https://codingfor.beer/tags/ubuntu/</guid>
+			<description>
+				
+				
+				
+			</description>
+		</item>
 		<item>
 			<title>beer</title>
 			<link>https://codingfor.beer/tags/beer/</link>
