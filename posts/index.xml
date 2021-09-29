@@ -6,10 +6,22 @@
 		<description>Recent content in Posts on codingfor.beer</description>
 		<generator>Hugo -- gohugo.io</generator>
 		<language>en-us</language>
-		<lastBuildDate>Thu, 01 Apr 2021 11:00:39 -0400</lastBuildDate>
+		<lastBuildDate>Wed, 29 Sep 2021 14:56:21 -0400</lastBuildDate>
 		
 		<atom:link href="https://codingfor.beer/posts/index.xml" rel="self" type="application/rss+xml" />
 		
+		<item>
+			<title>Docker compose &#43; devcontainer &#43; private artifacts feed</title>
+			<link>https://codingfor.beer/posts/devcontainer-compose-private-feed/</link>
+			<pubDate>Wed, 29 Sep 2021 14:56:21 -0400</pubDate>
+			
+			<guid>https://codingfor.beer/posts/devcontainer-compose-private-feed/</guid>
+			<description>
+				
+				TL:DR If you want use devcontainers and docker compose but also have a private Azure Artifacts feed you need to set the ...
+				
+			</description>
+		</item>
 		<item>
 			<title>Revert Messed up Ubuntu install of Gnome 40</title>
 			<link>https://codingfor.beer/posts/revert-messedup-ubuntu-gnome-40/</link>

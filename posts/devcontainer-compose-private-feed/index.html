@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+	
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-SNW7ZD8KVB"></script>
+	<script>
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+
+	gtag('config', 'G-SNW7ZD8KVB');
+	</script>
+	
+	<meta name="generator" content="Hugo 0.79.1" />
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	
+	<meta property="og:title" content="Docker compose &#43; devcontainer &#43; private artifacts feed">
+	
+	
+	<meta property="og:title" content="Docker compose &#43; devcontainer &#43; private artifacts feed" />
+<meta property="og:description" content="TL:DR If you want use devcontainers and docker compose but also have a private Azure Artifacts feed you need to set the network_mode to bridge and add links to the services that need to talk to each other.
+Background I recently got the chance to do some greenfield Azure Functions development and I wanted to use this opportunity to go all in on devcontainers. Getting up and running was super simple and there is plenty of articles out there that cover it." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://codingfor.beer/posts/devcontainer-compose-private-feed/" />
+<meta property="article:published_time" content="2021-09-29T14:56:21-04:00" />
+<meta property="article:modified_time" content="2021-09-29T14:56:21-04:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Docker compose &#43; devcontainer &#43; private artifacts feed"/>
+<meta name="twitter:description" content="TL:DR If you want use devcontainers and docker compose but also have a private Azure Artifacts feed you need to set the network_mode to bridge and add links to the services that need to talk to each other.
+Background I recently got the chance to do some greenfield Azure Functions development and I wanted to use this opportunity to go all in on devcontainers. Getting up and running was super simple and there is plenty of articles out there that cover it."/>
+
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/normalize.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/main.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/all.css" />
+	<title>Docker compose &#43; devcontainer &#43; private artifacts feed | Coding for Beer 🍻</title><script type="text/javascript">
+		window.heap=window.heap||[],heap.load=function(e,t){window.heap.appid=e,window.heap.config=t=t||{};var r=document.createElement("script");r.type="text/javascript",r.async=!0,r.src="https://cdn.heapanalytics.com/js/heap-"+e+".js";var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(r,a);for(var n=function(e){return function(){heap.push([e].concat(Array.prototype.slice.call(arguments,0)))}},p=["addEventProperties","addUserProperties","clearEventProperties","identify","resetIdentity","removeEventProperty","setEventProperties","track","unsetEventProperty"],o=0;o<p.length;o++)heap[p[o]]=n(p[o])};
+		heap.load("2557766162");
+	</script>
+</head>
+<body><header>
+	
+	<div id="titletext"><h2 id="title"><a href="https://codingfor.beer">Coding for Beer 🍻</a></h2></div>
+	<div id="title-description"><div id="social">
+			<nav>
+				<ul></ul>
+			</nav>
+		</div>
+	</div>
+	
+</header>
+<main><div class="post">
+	
+	<div class="author">
+	
+	</div>
+	<div class="post-header">
+	
+		<div class="meta">
+			
+			<div class="date">
+				<span class="day">29</span>
+				<span class="rest">Sep 2021</span>
+			</div>
+			
+		</div>
+		
+		<div class="matter">
+			<h1 class="title">Docker compose &#43; devcontainer &#43; private artifacts feed</h1>
+		</div>
+	</div>
+	<div class="markdown">
+		<p><strong><em>TL:DR</em></strong> If you want use devcontainers and docker compose but also have a private Azure Artifacts feed you need to set the <code>network_mode</code> to <code>bridge</code> and add links to the services that need to talk to each other.</p>
+<h2 id="background">Background</h2>
+<p>I recently got the chance to do some greenfield Azure Functions development and I wanted to use this opportunity to go all in on devcontainers. Getting up and running was super simple and there is plenty of articles out there that cover it. My situation where things started to deviate was that I wanted to seperate out my services using <code>docker-compose.yml</code> instead of a single <code>Dockerfile</code>.</p>
+<p>Simple enough, I make a few quick edits to the <code>devcontainer.json</code>:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-diff" data-lang="diff"><span style="color:#800080;font-weight:bold">@@ -2,7 +2,9 @@
+</span><span style="color:#800080;font-weight:bold"></span> // https://github.com/microsoft/vscode-dev-containers/tree/v0.194.3/containers/azure-functions-dotnetcore-3.1
+ {
+        &#34;name&#34;: &#34;My Function App&#34;,
+<span style="color:#a40000">-       &#34;dockerFile&#34;: &#34;Dockerfile&#34;,
+</span><span style="color:#a40000"></span><span style="color:#00a000">+       &#34;dockerComposeFile&#34;: &#34;docker-compose.yml&#34;,
+</span><span style="color:#00a000">+       &#34;workspaceFolder&#34;: &#34;/workspace&#34;,
+</span><span style="color:#00a000">+       &#34;service&#34;: &#34;function&#34;,
+</span><span style="color:#00a000"></span>        &#34;forwardPorts&#34;: [ 7071 ],
+
+        // Set *default* container specific settings.json values on container create.
+
+</code></pre></div><p>Then generated a quick <code>docker-compose.yml</code> file:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#204a87;font-weight:bold">version</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#4e9a06">&#39;3&#39;</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline"></span><span style="color:#204a87;font-weight:bold">services</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">function</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">    </span><span style="color:#204a87;font-weight:bold">build</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">      </span><span style="color:#204a87;font-weight:bold">context</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#000">.</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">      </span><span style="color:#204a87;font-weight:bold">dockerfile</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#000">Dockerfile            </span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">    </span><span style="color:#204a87;font-weight:bold">init</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#204a87;font-weight:bold">true</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">    </span><span style="color:#204a87;font-weight:bold">volumes</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">      </span>- <span style="color:#000">./:/workspace:cached</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">    </span><span style="color:#204a87;font-weight:bold">command</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#000">sleep infinity</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">    </span><span style="color:#204a87;font-weight:bold">user</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#000">vscode</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">azurite</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">    </span><span style="color:#204a87;font-weight:bold">image</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#4e9a06">&#34;mcr.microsoft.com/azure-storage/azurite&#34;</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">    </span><span style="color:#204a87;font-weight:bold">ports</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">      </span>- <span style="color:#4e9a06">&#34;10000:10000&#34;</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">      </span>- <span style="color:#4e9a06">&#34;10001:10001&#34;</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">      </span>- <span style="color:#4e9a06">&#34;10002:10002&#34;</span><span style="color:#f8f8f8;text-decoration:underline">
+</span></code></pre></div><p>So what did I do there? I switched the <code>devcontainer.json</code> to use the <code>docker-compose.yml</code> file which required me to add the <code>workspaceFolder</code> of where my code is going and the <code>service</code> that I want VS Code to be attached to.</p>
+<p>Next I created a simple <code>docker-compose.yml</code> file that pointed to my <code>Dockerfile</code> for my devcontainer as well as the public container for the Azurite emulator. Once that was done, I opened up the command palete and <code>Open in Container</code> and all was well in the world.</p>
+<p>We use a private feed on Azure Artifacts so I needed to setup authentication to that feed via the <code>dotnet</code> cli, so I again edit <code>devcontainer.json</code> to add a <code>postCreateCommand</code> to download the <code>artifacts-credprovider</code> and install it.</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-diff" data-lang="diff"><span style="color:#800080;font-weight:bold">@@ -20,5 +20,6 @@
+</span><span style="color:#800080;font-weight:bold"></span>        // &#34;postCreateCommand&#34;: &#34;dotnet restore&#34;,
+
+        // Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
+<span style="color:#a40000">-       &#34;remoteUser&#34;: &#34;vscode&#34;
+</span><span style="color:#a40000"></span><span style="color:#00a000">+       &#34;remoteUser&#34;: &#34;vscode&#34;,
+</span><span style="color:#00a000">+       &#34;postCreateCommand&#34;: &#34;curl -fsSL https://aka.ms/install-artifacts-credprovider.sh | bash&#34;
+</span></code></pre></div><p>Rebuild my containers and check the logs</p>
+<p><figure>
+  <img src="/posts/credprovider-installed.png" alt="Container successfully installed Credential Provider"  />
+</figure></p>
+<p>So, again, all is good so far but when I attempt to login via <code>dotnet restore --interactive</code> things start to fall apart. It continues to complain about a 401 but never prompts me for my device code.</p>
+<p><figure>
+  <img src="/posts/credprovider-http401.png" alt="Container would not authenticate"  />
+</figure></p>
+<p>So after much head scratching and google-bingin' I determined it was the networking that was causing the issue.</p>
+<p>Editing the <code>docker-compose.yml</code> to tell the containers to use <code>bridge</code> networking and use links for  connecting the containers together was all that was needed to get it up and going again.</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-diff" data-lang="diff"><span style="color:#800080;font-weight:bold">@@ -8,9 +8,10 @@ services:
+</span><span style="color:#800080;font-weight:bold"></span>     init: true
+     volumes:
+<span style="color:#a40000">-      - ./:/workspace:cached
+</span><span style="color:#a40000"></span><span style="color:#00a000">+      - ../:/workspace:cached
+</span><span style="color:#00a000"></span>     command: sleep infinity
+     user: vscode
+<span style="color:#00a000">+    network_mode: bridge
+</span><span style="color:#00a000">+    links:
+</span><span style="color:#00a000">+      - azurite
+</span><span style="color:#00a000"></span>
+   azurite:
+     image: &#34;mcr.microsoft.com/azure-storage/azurite&#34;
+<span style="color:#800080;font-weight:bold">@@ -18,3 +19,4 @@ services:
+</span><span style="color:#800080;font-weight:bold"></span>       - &#34;10000:10000&#34;
+       - &#34;10001:10001&#34;
+       - &#34;10002:10002&#34;
+<span style="color:#00a000">+    network_mode: bridge
+</span></code></pre></div>
+	</div>
+	
+	
+	
+	
+	
+		
+	
+		
+	
+		
+		
+	</div>
+<script src="https://utteranc.es/client.js"
+        repo="jtucker/codingforbeer"
+        issue-term="og:title"
+        theme="boxy-light"
+        crossorigin="anonymous"
+        async>
+</script>
+
+</div>
+
+  </main>
+
+
+
+
+
+</body>
+</html>
